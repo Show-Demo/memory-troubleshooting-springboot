@@ -1,4 +1,4 @@
-package com.example.memorydemo;
+package com.example;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,21 +13,14 @@ public class MemoryLeakDemoController {
 
     @GetMapping("/memory-leak")
     public String triggerMemoryLeak() {
-        // 模拟内存泄漏：不断添加对象到列表
-        // 每隔一段时间会打印当前的堆内存使用情况
-        for (int i = 0; i < 10000; i++) {
+        // 模拟快速内存泄漏：循环快速添加对象到列表中
+        for (int i = 0; i < 100000; i++) {
             leakList.add(new Object());
             if (i % 1000 == 0) {
-                // 每 1000 次循环，打印当前堆内存使用情况
                 long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-                System.out.println("Current used memory: " + usedMemory / 1024 / 1024 + " MB");
-            }
-            try {
-                Thread.sleep(100); // 延时100ms，模拟真实使用场景
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("Iteration " + i + " - Current used memory: " + usedMemory / 1024 / 1024 + " MB");
             }
         }
-        return "Memory leak triggered!";
+        return "Fast memory leak triggered!";
     }
 }
